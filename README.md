@@ -1,0 +1,2 @@
+# SPM
+Stochastic Palaeointensity Model
