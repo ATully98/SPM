@@ -1,5 +1,6 @@
 # SPM
 Stochastic Palaeointensity Model
+
 To use SPM please use the Jupyter Notebook provided (PI Model.ipynb) once the files have been downloaded. In order to run the notebook please download the files to a local folder. The following parameters should then be set:
 
 Study_iter - the number of simulation iterations to be performed
