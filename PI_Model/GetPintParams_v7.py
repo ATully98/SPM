@@ -688,11 +688,12 @@ def GetPintParams_v7(Mvec, Temps, Treatment, start_pt, end_pt, Blab_orient, Blab
 	kparams = Utilities.AraiCurvature(Xpts, Ypts)
 	k = kparams[0,0]
 	SSE = kparams[3,0]
-
+	RMS = kparams[4,0]
 	# curvature using only the best-fit segment
 	kparams = Utilities.AraiCurvature(Xpts[seg], Ypts[seg])
 	k_prime = kparams[0,0]
 	SSEprime = kparams[3,0]
+	RMSprime = kparams[4,0]
 
 	## Directional stats
 	Decs, Incs, Ints = Utilities.cart2dir(NRMvec[seg,1:2], NRMvec[seg,2:3], NRMvec[seg,3:4])
@@ -1693,8 +1694,7 @@ def GetPintParams_v7(Mvec, Temps, Treatment, start_pt, end_pt, Blab_orient, Blab
 	####   New Zig-Zag parameter #####
 	####	   (To be named)	 #####
 	##################################
-	ziggie, cum_len, Line_Len_scaled, x_prime_scaled, y_prime_scaled = get_ziggie(Xpts, Ypts, seg_min, seg_max)
-
+	ziggie, cum_len, arc = get_ziggie(Xpts, Ypts, seg_min, seg_max)
 
 	## Round the stats to the recommended SPD precision
 
@@ -1804,10 +1804,10 @@ def GetPintParams_v7(Mvec, Temps, Treatment, start_pt, end_pt, Blab_orient, Blab
 	# IMG_flag tmp removed
 
 
-	Params = Meas_Data, Meas_Treatment, Meas_Temp,Blab_orient, Xpts, Ypts, x_prime_scaled, y_prime_scaled,nmax, Temp_steps, TRMvec, NRMvec, Blab, PCpoints, MDpoints, ADpoints, Anis_c, Hanc, s_tensor, n, Seg_Ends, Tmin, Tmax, xbar, ybar, b, Banc, sigma_b, beta, sigma_B, Y_int, X_int, x_prime, y_prime, Delta_x_prime, Delta_y_prime, Line_Len, VDS, f, f_vds, FRAC,gap, GAP_MAX, qual, w, R_corr,  R_det, S_prime_qual, k, SSE, k_prime,  SSEprime, Dec_A, Inc_A, MAD_anc, Dec_F, Inc_F, MAD_free, alpha, alpha_prime, DANG,NRM_dev, Theta, a95, alpha_TRM, gamma, CRM_R, BY_Z, Z, Z_star, IZZI_MD, steps, ziggie, Line_Len_scaled, cum_len, SCAT_BOX, SCAT_points, SCAT, multi_SCAT, multi_SCAT_beta, Check_points, check_slope, check_int, com_slope_pval,  com_elev_pval, n_pTRM,  check, dCK, DRAT, maxDEV,  CDRAT, CDRAT_prime, DRATS, DRATS_prime, mean_DRAT, mean_DRAT_prime, mean_DEV, mean_DEV_prime, dpal, pTRM_sign, CpTRM_sign, dpal_signed, dpal_ratio, n_tail, dTR, dTRtrm, DRATtail, MDvds, tail_sign, dt_star, n_add, dAC, Plot_Arai, Plot_Line, Plot_pTRM_Lines, Plot_orth, Plot_PCA_anc, Plot_PCA_free, Plot_Z_Arai, Plot_Z_pTRM_Lines, NLT_meas, NLT_a_est, NLT_b_est, dTRM_NLT, dTRM_Anis
+	Params = Meas_Data, Meas_Treatment, Meas_Temp,Blab_orient, Xpts, Ypts, x_prime_scaled, y_prime_scaled,nmax, Temp_steps, TRMvec, NRMvec, Blab, PCpoints, MDpoints, ADpoints, Anis_c, Hanc, s_tensor, n, Seg_Ends, Tmin, Tmax, xbar, ybar, b, Banc, sigma_b, beta, sigma_B, Y_int, X_int, x_prime, y_prime, Delta_x_prime, Delta_y_prime, Line_Len, VDS, f, f_vds, FRAC,gap, GAP_MAX, qual, w, R_corr,  R_det, S_prime_qual, k, SSE, k_prime,  SSEprime, Dec_A, Inc_A, MAD_anc, Dec_F, Inc_F, MAD_free, alpha, alpha_prime, DANG,NRM_dev, Theta, a95, alpha_TRM, gamma, CRM_R, BY_Z, Z, Z_star, IZZI_MD, steps, ziggie, Line_Len_scaled, cum_len, ziggie_new, arc, cum_len_new, SCAT_BOX, SCAT_points, SCAT, multi_SCAT, multi_SCAT_beta, Check_points, check_slope, check_int, com_slope_pval,  com_elev_pval, n_pTRM,  check, dCK, DRAT, maxDEV,  CDRAT, CDRAT_prime, DRATS, DRATS_prime, mean_DRAT, mean_DRAT_prime, mean_DEV, mean_DEV_prime, dpal, pTRM_sign, CpTRM_sign, dpal_signed, dpal_ratio, n_tail, dTR, dTRtrm, DRATtail, MDvds, tail_sign, dt_star, n_add, dAC, Plot_Arai, Plot_Line, Plot_pTRM_Lines, Plot_orth, Plot_PCA_anc, Plot_PCA_free, Plot_Z_Arai, Plot_Z_pTRM_Lines, NLT_meas, NLT_a_est, NLT_b_est, dTRM_NLT, dTRM_Anis
 
 
-	stats = {"Meas_Data": Meas_Data,"Meas_Treatment" : Meas_Treatment , "Meas_Temp": Meas_Temp, "Blab_orient" : Blab_orient, "Xpts" : Xpts, "Ypts" : Ypts, "x_prime_scaled": x_prime_scaled, "y_prime_scaled": y_prime_scaled, "nmax" : nmax, "Temp_steps" : Temp_steps, "TRMvec" : TRMvec, "NRMvec" : NRMvec, "Blab" : Blab, "PCpoints" : PCpoints, "MDpoints" : MDpoints, "ADpoints" : ADpoints, "Anis_c" : Anis_c, "Hanc" : Hanc, "s_tensor" : s_tensor, "n": n, "Seg_Ends" : Seg_Ends, "Tmin" : Tmin, "Tmax" : Tmax, "xbar" : xbar, "ybar" : ybar, "b": b, "Banc" : Banc, "sigma_b" : sigma_b, "beta" : beta, "sigma_B" : sigma_B, "Y_int": Y_int, "X_int": X_int, "x_prime" : x_prime, "y_prime" : y_prime, "Delta_x_prime": Delta_x_prime, "Delta_y_prime": Delta_y_prime, "Line_Len" : Line_Len, "VDS" : VDS, "f": f, "f_vds": f_vds, "FRAC" : FRAC, "gap" : gap, "GAP_MAX" : GAP_MAX, "qual" : qual, "w": w, "R_corr" : R_corr, "R_det": R_det, "S_prime_qual" : S_prime_qual, "k": k, "SSE" : SSE, "k_prime" : k_prime, "SSEprime" : SSEprime, "Dec_A": Dec_A, "Inc_A": Inc_A, "MAD_anc" : MAD_anc, "Dec_F": Dec_F, "Inc_F": Inc_F, "MAD_free" : MAD_free, "alpha": alpha, "alpha_prime" : alpha_prime, "DANG" : DANG, "NRM_dev" : NRM_dev, "Theta": Theta, "a95" : a95, "alpha_TRM": alpha_TRM, "gamma": gamma, "CRM_R": CRM_R, "BY_Z" : BY_Z, "Z": Z, "Z_star" : Z_star, "IZZI_MD" : IZZI_MD, "steps": steps, "ziggie" : ziggie, "Line_Len_scaled": Line_Len_scaled, "cum_len": cum_len, "SCAT_BOX" : SCAT_BOX, "SCAT_points" : SCAT_points, "SCAT" : SCAT, "multi_SCAT" : multi_SCAT, "multi_SCAT_beta" : multi_SCAT_beta, "Check_points" : Check_points, "check_slope" : check_slope, "check_int": check_int, "com_slope_pval" : com_slope_pval, "com_elev_pval": com_elev_pval, "n_pTRM" : n_pTRM, "check": check, "dCK" : dCK, "DRAT" : DRAT, "maxDEV" : maxDEV, "CDRAT": CDRAT, "CDRAT_prime" : CDRAT_prime, "DRATS": DRATS, "DRATS_prime" : DRATS_prime, "mean_DRAT": mean_DRAT, "mean_DRAT_prime" : mean_DRAT_prime, "mean_DEV" : mean_DEV, "mean_DEV_prime" : mean_DEV_prime, "dpal" : dpal, "pTRM_sign": pTRM_sign, "CpTRM_sign" : CpTRM_sign, "dpal_signed" : dpal_signed, "dpal_ratio" : dpal_ratio, "n_tail" : n_tail, "dTR" : dTR, "dTRtrm": dTRtrm, "DRATtail" : DRATtail, "MDvds": MDvds, "tail_sign": tail_sign, "dt_star" : dt_star, "n_add": n_add, "dAC" : dAC, "Plot_Arai": Plot_Arai, "Plot_Line": Plot_Line, "Plot_pTRM_Lines" : Plot_pTRM_Lines, "Plot_orth": Plot_orth, "Plot_PCA_anc" : Plot_PCA_anc, "Plot_PCA_free": Plot_PCA_free, "Plot_Z_Arai" : Plot_Z_Arai, "Plot_Z_pTRM_Lines": Plot_Z_pTRM_Lines, "NLT_meas": NLT_meas, "NLT_a_est": NLT_a_est, "NLT_b_est": NLT_b_est, "dTRM_NLT": dTRM_NLT, "dTRM_Anis": dTRM_Anis, "NRM_in_TRM": NRM_in_TRM, "Line_Len": Line_Len}
+	stats = {"Meas_Data": Meas_Data,"Meas_Treatment" : Meas_Treatment , "Meas_Temp": Meas_Temp, "Blab_orient" : Blab_orient, "Xpts" : Xpts, "Ypts" : Ypts, "x_prime_scaled": x_prime_scaled, "y_prime_scaled": y_prime_scaled, "nmax" : nmax, "Temp_steps" : Temp_steps, "TRMvec" : TRMvec, "NRMvec" : NRMvec, "Blab" : Blab, "PCpoints" : PCpoints, "MDpoints" : MDpoints, "ADpoints" : ADpoints, "Anis_c" : Anis_c, "Hanc" : Hanc, "s_tensor" : s_tensor, "n": n, "Seg_Ends" : Seg_Ends, "Tmin" : Tmin, "Tmax" : Tmax, "xbar" : xbar, "ybar" : ybar, "b": b, "Banc" : Banc, "sigma_b" : sigma_b, "beta" : beta, "sigma_B" : sigma_B, "Y_int": Y_int, "X_int": X_int, "x_prime" : x_prime, "y_prime" : y_prime, "Delta_x_prime": Delta_x_prime, "Delta_y_prime": Delta_y_prime, "Line_Len" : Line_Len, "VDS" : VDS, "f": f, "f_vds": f_vds, "FRAC" : FRAC, "gap" : gap, "GAP_MAX" : GAP_MAX, "qual" : qual, "w": w, "R_corr" : R_corr, "R_det": R_det, "S_prime_qual" : S_prime_qual, "k": k, "SSE" : SSE, "RMS": RMS, "k_prime" : k_prime, "SSEprime" : SSEprime, "RMSprime": RMSprime, "Dec_A": Dec_A, "Inc_A": Inc_A, "MAD_anc" : MAD_anc, "Dec_F": Dec_F, "Inc_F": Inc_F, "MAD_free" : MAD_free, "alpha": alpha, "alpha_prime" : alpha_prime, "DANG" : DANG, "NRM_dev" : NRM_dev, "Theta": Theta, "a95" : a95, "alpha_TRM": alpha_TRM, "gamma": gamma, "CRM_R": CRM_R, "BY_Z" : BY_Z, "Z": Z, "Z_star" : Z_star, "IZZI_MD" : IZZI_MD, "steps": steps, "Line_Len_scaled" : Line_Len_scaled, "ziggie" : ziggie, "arc" : arc, "cum_len" : cum_len, "SCAT_BOX" : SCAT_BOX, "SCAT_points" : SCAT_points, "SCAT" : SCAT, "multi_SCAT" : multi_SCAT, "multi_SCAT_beta" : multi_SCAT_beta, "Check_points" : Check_points, "check_slope" : check_slope, "check_int": check_int, "com_slope_pval" : com_slope_pval, "com_elev_pval": com_elev_pval, "n_pTRM" : n_pTRM, "check": check, "dCK" : dCK, "DRAT" : DRAT, "maxDEV" : maxDEV, "CDRAT": CDRAT, "CDRAT_prime" : CDRAT_prime, "DRATS": DRATS, "DRATS_prime" : DRATS_prime, "mean_DRAT": mean_DRAT, "mean_DRAT_prime" : mean_DRAT_prime, "mean_DEV" : mean_DEV, "mean_DEV_prime" : mean_DEV_prime, "dpal" : dpal, "pTRM_sign": pTRM_sign, "CpTRM_sign" : CpTRM_sign, "dpal_signed" : dpal_signed, "dpal_ratio" : dpal_ratio, "n_tail" : n_tail, "dTR" : dTR, "dTRtrm": dTRtrm, "DRATtail" : DRATtail, "MDvds": MDvds, "tail_sign": tail_sign, "dt_star" : dt_star, "n_add": n_add, "dAC" : dAC, "Plot_Arai": Plot_Arai, "Plot_Line": Plot_Line, "Plot_pTRM_Lines" : Plot_pTRM_Lines, "Plot_orth": Plot_orth, "Plot_PCA_anc" : Plot_PCA_anc, "Plot_PCA_free": Plot_PCA_free, "Plot_Z_Arai" : Plot_Z_Arai, "Plot_Z_pTRM_Lines": Plot_Z_pTRM_Lines, "NLT_meas": NLT_meas, "NLT_a_est": NLT_a_est, "NLT_b_est": NLT_b_est, "dTRM_NLT": dTRM_NLT, "dTRM_Anis": dTRM_Anis, "NRM_in_TRM": NRM_in_TRM, "Line_Len": Line_Len}
 
 	return stats
 
@@ -1856,16 +1856,70 @@ def get_Z_star(Xpts, Ypts, Y_int, b, seg_min, seg_max):
 
 	return Z_star
 
-def get_ziggie(Xpts, Ypts, seg_min, seg_max):
-	Xn = Xpts[seg_min:seg_max+1]
-	Xn = Xn/Xn[-1]
-	Yn = Ypts[seg_min:seg_max+1]
-	Yn = Yn/Yn[0]
+
+
+def intersection(a, b, radius, p2x, p2y):
+
+	""" find the two points where a secant intersects a circle """
+	dx, dy = p2x - a, p2y - b
+	j = dx**2 + dy**2
+	k = 2 * (dx * (p2x- a) + dy * (p2y - b))
+	l = (p2x - a)**2 + (p2y -b)**2 - radius**2
+
+	discriminant = k**2 - 4 * j * l
+#	 assert (discriminant > 0), 'Not a secant!'
+
+	t1 = (-k + discriminant**0.5) / (2 * j)
+	t2 = (-k - discriminant**0.5) / (2 * j)
+
+	return (dx * t1 + p2x, dy * t1 + p2y), (dx * t2 + p2x, dy * t2 + p2y)
+
+def closer(a,b,p1,p2):
+	dist1 = np.sqrt( (p1[0] - a)**2 + (p1[1] - b)**2 )
+	dist2 = np.sqrt( (p2[0] - a)**2 + (p2[1] - b)**2 )
+	if dist1 > dist2:
+		return p2
+	else:
+		return p1
+
+def AraiArc(k, a, b, Xn1, Yn1, Xn2,Yn2):
+	r = np.abs(1/k)
+
+	p1, p2 = intersection(a, b, r, Xn2, Yn2)
+	p = closer(Xn2,Yn2,p1,p2)
+	x2=p[0]
+	y2=p[1]
+
+	p1, p2 = intersection(a, b, r, Xn1, Yn1)
+	p = closer(Xn1,Yn1,p1,p2)
+	x1=p[0]
+	y1=p[1]
+
+	# vectors 1 and 2
+	vec1 = [a-x1, b-y1]/np.linalg.norm([a-x1, b-y1])
+	vec2 = [a-x2, b-y2]/np.linalg.norm([a-x2, b-y2])
+
+	# angle between vectors
+	angle = np.arctan2(vec1[0] * vec2[1] - vec1[1] * vec2[0], vec1[0] * vec2[0] + vec1[1] * vec2[1])
+
+	if (angle < 0):
+		angle += 2*np.pi
+	if k<0:
+		angle = 2*np.pi - angle
+	# arc for angle in radians
+
+	arc = r*angle
+	return arc, (x1, y1), (x2,y2)
+
+# Find the scaled length of the best fit line
+# normalise points
+def get_zigzag(Xn, Yn, seg_min, seg_max):
+
 	n = len(Xn)
 	# find best fit line
 	U = detrend(Xn, type = "constant", axis = 0) # (Xi-Xbar)
 	V = detrend(Yn, type = "constant", axis = 0) # (Yi-Ybar)
-	b = np.sign(np.sum(U*V))*np.std(Yn, ddof = 1)/np.std(Xn, ddof = 1)
+	b = np.sign(np.sum(U*V))*np.std(Yn, ddof = 1)/np.std(Xn, ddof = 1);
 	Y_int = np.mean(Yn) - b*np.mean(Xn)
 	X_int = -Y_int/b
 
@@ -1893,4 +1947,38 @@ def get_ziggie(Xpts, Ypts, seg_min, seg_max):
 
 	# calculate the log of the cumulative length over the length of the best fit line
 	ziggie = np.log(cum_len/Line_Len)
-	return ziggie, cum_len, Line_Len, x_prime, y_prime
+	return ziggie, cum_len, Line_Len
+
+# Find the scaled length of the best fit line
+# normalise points
+def get_ziggie(Xpts, Ypts, seg_min, seg_max):
+
+	Xn = Xpts[seg_min:seg_max+1]
+	Xn = Xn/np.amax(Xn)
+	Yn = Ypts[seg_min:seg_max+1]
+	Yn = Yn/ np.amax(Yn)
+	ymax_idx = np.where(Yn == np.max(Yn))
+	xmax_idx = np.where(Xn == np.max(Xn))
+	k_prime, a, b, SSE, RMS = Utilities.AraiCurvature(Xn,Yn)
+
+	if (np.abs(k_prime) <= 1e-3) or (np.isnan(k_prime)):
+		ziggie, cum_len, Line_Len = get_zigzag(Xn, Yn, seg_min, seg_max)
+		return ziggie, cum_len, Line_Len
+	else:
+		arc, point1, point2 = AraiArc(k_prime.item(), a.item(), b.item(), Xn[0][0],Yn[0][0],Xn[-1][0], Yn[-1][0],  )
+		n = len(Xn)
+
+		# Set cumulative length to 0
+		cum_len = 0.0
+
+		# iterate through pairs of points in Arai plot
+		for i in range(0, n-1):
+
+			# find the distance between the two points
+			dist = np.sqrt((Xn[i+1,0] - Xn[i,0])**2 + (Yn[i+1,0] - Yn[i,0])**2)
+			# Add to the cumulative distance
+			cum_len = cum_len + dist
+
+		# calculate the log of the cumulative length over the length of the best fit arc
+		ziggie = np.log(cum_len/arc)
+		return ziggie, cum_len, arc
